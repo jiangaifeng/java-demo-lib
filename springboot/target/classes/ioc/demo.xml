@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--无参构造方式-->
+    <!--<bean id="student" class="cn.jiangaifeng.bean.Student">-->
+        <!--<property name="name" value="zhangsan"></property>-->
+        <!--<property name="age" value="12"></property>-->
+        <!--<property name="classList">-->
+            <!--<list>-->
+                <!--<value>math</value>-->
+                <!--<value>english</value>-->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!--有参构造方式-->
+    <bean id="student" class="cn.jiangaifeng.bean.Student">
+        <constructor-arg index="0" value="zhangsan"></constructor-arg>
+        <constructor-arg index="1" value="11"></constructor-arg>
+        <property name="classList">
+            <list>
+                <value>math</value>
+                <value>english</value>
+            </list>
+        </property>
+    </bean>
+
+    <!--静态工厂-->
+    <bean id="dog" class="cn.jiangaifeng.ioc.xml.AnimalFactory" factory-method="getAnimal">
+        <constructor-arg value="dog"></constructor-arg>
+    </bean>
+
+    <!--动态工厂-->
+    <!--<bean name="animalFactory" class="cn.jiangaifeng.ioc.xml.AnimalFactory"/>-->
+
+    <!--<bean id="dog" factory-bean="animalFactory" factory-method="getAnimal2">-->
+        <!--<constructor-arg value="dog"/>-->
+    <!--</bean>-->
+
+    <!--<bean id="cat" factory-bean="animalFactory" factory-method="getAnimal2">-->
+        <!--<constructor-arg value="cat"/>-->
+    <!--</bean>-->
+
+
+</beans>
