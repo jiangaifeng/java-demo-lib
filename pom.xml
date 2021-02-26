@@ -17,6 +17,8 @@
     
     <modules>
         <module>springboot</module>
+        <module>databind</module>
+        <module>security</module>
     </modules>
 
 
