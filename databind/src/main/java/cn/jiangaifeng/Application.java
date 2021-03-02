@@ -12,5 +12,8 @@ public class Application {
     public static void main(String[] args){
         System.out.println("server is running at 8080....");
         SpringApplication.run(Application.class,args);
+
+
+
     }
 }

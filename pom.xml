@@ -19,6 +19,7 @@
         <module>springboot</module>
         <module>databind</module>
         <module>security</module>
+        <module>mybatis</module>
     </modules>
 
 
