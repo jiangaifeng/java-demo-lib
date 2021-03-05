@@ -20,6 +20,7 @@
         <module>databind</module>
         <module>security</module>
         <module>mybatis</module>
+        <module>security-validate</module>
     </modules>
 
 
