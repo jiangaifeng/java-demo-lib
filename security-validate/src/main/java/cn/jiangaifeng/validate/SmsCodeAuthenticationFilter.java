@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 public class SmsCodeAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     private String mobileParameter = "mobile";
-
     private boolean postOnly = true;
 
     public SmsCodeAuthenticationFilter() {

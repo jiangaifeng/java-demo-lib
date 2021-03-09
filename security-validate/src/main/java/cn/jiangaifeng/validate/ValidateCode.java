@@ -31,4 +31,8 @@ public class ValidateCode {
     public void setExpireTime(LocalDateTime expireTime) {
         this.expireTime = expireTime;
     }
+
+    public boolean isExpried(){
+        return LocalDateTime.now().isAfter( expireTime );
+    }
 }

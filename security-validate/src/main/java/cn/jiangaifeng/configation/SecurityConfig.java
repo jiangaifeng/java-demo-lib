@@ -1,15 +1,19 @@
 package cn.jiangaifeng.configation;
 
+import cn.jiangaifeng.validate.SmsCodeAuthenticationFilter;
+import cn.jiangaifeng.validate.SmsCodeAuthenticationProvider;
+import cn.jiangaifeng.validate.ValidateCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 
 
 @Configuration
@@ -17,29 +21,50 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private AuthenticationSuccessHandler myAuthenticationSuccessHandler;
+    private ValidateCodeFilter validateCodeFilter;
 
     @Autowired
-    private AuthenticationFailureHandler myAuthentiationFailHandler;
+    private SmsCodeAuthenticationFilter smsCodeAuthenticationFilter;
 
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
+    @Autowired
+    private SmsCodeAuthenticationProvider smsCodeAuthenticationProvider;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin() // 开始表单登录配置
-            .loginPage("/authentication/require")//验证失败重定向地址
-            .loginProcessingUrl("/api/auth/login")//表单登录url
-            .successHandler( myAuthenticationSuccessHandler )//表单登录成功
-            .failureHandler( myAuthentiationFailHandler )//表单登录失败
-            .and()
+        http.addFilterBefore(validateCodeFilter, AbstractPreAuthenticatedProcessingFilter.class)
+            .authenticationProvider(smsCodeAuthenticationProvider)
+            .addFilterAfter( smsCodeAuthenticationFilter, UsernamePasswordAuthenticationFilter.class )
             .authorizeRequests() // 开始请求授权配置
             .antMatchers("/auth/code").permitAll()//忽略/auth/code
             .anyRequest() // 其他任何请求
             .authenticated()// 都需要身份认证
             .and()
             .csrf().disable();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public SmsCodeAuthenticationFilter smsCodeAuthenticationFilter(){
+        SmsCodeAuthenticationFilter smsCodeAuthenticationFilter = new SmsCodeAuthenticationFilter();
+        try {
+            smsCodeAuthenticationFilter.setAuthenticationManager(authenticationManager());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return smsCodeAuthenticationFilter;
+    }
+
+    @Bean
+    public SmsCodeAuthenticationProvider smsCodeAuthenticationProvider(){
+        return new SmsCodeAuthenticationProvider();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 }
